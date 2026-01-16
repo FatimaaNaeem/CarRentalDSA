@@ -68,6 +68,7 @@ void customerMenu(int customerID)
     int choice;
     do
     {
+        cout<<endl;
         cout << "\n--- CUSTOMER MENU ---\n";
         cout << "1. View Cars\n2. Rent Car\n3. Logout\n";
         cin >> choice;
