@@ -1,3 +1,9 @@
+// Babbyy Girl apny jb bhi gpt wagaira ko code dena hai to unhein 1 poori class di jiay ga
+// Dont give poora code (BECAUSE CODE LMBA HAI GPT PE PASTE NI HONA)
+
+// Babes use system("clear") And system("pause") in your code 
+// system("clear") pehle likha hoa sb clear kr de ga and system("pause") udhr rok de ga 
+
 #include <iostream>
 #include <fstream>
 #include <string>
