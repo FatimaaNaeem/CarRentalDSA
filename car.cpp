@@ -1,111 +1,120 @@
 #include <iostream>
-#include <string>
 #include <fstream>
+#include <string>
 using namespace std;
 
 struct Car
 {
-    string carName;
-    string carPlateNo;
-    string color;
-    string brand;
-    string model;
-    string pricePerHour;
-    bool availability;
+    string plate;
+    string name;
+    int price;
+    int available;
     Car *next;
 };
 
-Car *carHead = NULL;
+static Car *head = NULL;
+static int loaded = 0;
 
-void insertCar(string name, string plateNo, string color, string brand, string model, string pricePerHour, bool availability)
+void loadCars()
 {
-    Car *newNode = new Car{name, plateNo, color, brand, model, pricePerHour, availability, NULL};
-
-    if (carHead == NULL)
-        carHead = newNode;
-    else
-    {
-        Car *temp = carHead;
-        while (temp->next != NULL)
-            temp = temp->next;
-        temp->next = newNode;
-    }
-}
-
-bool deleteCar(string plateNo)
-{
-    if (carHead == NULL)
-        return false;
-
-    if (carHead->carPlateNo == plateNo)
-    {
-        Car *temp = carHead;
-        carHead = carHead->next;
-        delete temp;
-        return true;
-    }
-
-    Car *current = carHead;
-    Car *prev = NULL;
-
-    while (current != NULL && current->carPlateNo != plateNo)
-    {
-        prev = current;
-        current = current->next;
-    }
-
-    if (current == NULL)
-        return false;
-
-    prev->next = current->next;
-    delete current;
-    return true;
-}
-
-void displayCars()
-{
-    Car *temp = carHead;
-    if (temp == NULL)
-    {
-        cout << "No cars available.\n";
+    if (loaded)
         return;
-    }
-    while (temp != NULL)
+    loaded = 1;
+
+    ifstream fin("cars.txt");
+    while (true)
     {
-        cout << "Car Name: " << temp->carName << endl;
-        cout << "Car Plate No: " << temp->carPlateNo << endl;
-        cout << "Color: " << temp->color << endl;
-        cout << "Brand: " << temp->brand << endl;
-        cout << "Model: " << temp->model << endl;
-        cout << "Price Per Hour: " << temp->pricePerHour << endl;
-        cout << "Availability: " << (temp->availability ? "Available" : "Not Available") << endl;
-        cout << "-----------------------\n";
-        temp = temp->next;
+        Car *n = new Car;
+        fin >> n->plate >> n->name >> n->price >> n->available;
+        if (!fin)
+        {
+            delete n;
+            break;
+        }
+        n->next = head;
+        head = n;
     }
+    fin.close();
 }
 
-void saveCarData()
+void saveCars()
 {
     ofstream fout("cars.txt");
-    Car *temp = carHead;
-    while (temp != NULL)
+    Car *t = head;
+    while (t)
     {
-        fout << temp->carName << " " << temp->carPlateNo << " " << temp->color << " "
-             << temp->brand << " " << temp->model << " " << temp->pricePerHour << " "
-             << temp->availability << endl;
-        temp = temp->next;
+        fout << t->plate << " " << t->name << " " << t->price << " " << t->available << "\n";
+        t = t->next;
     }
     fout.close();
 }
 
-void ViewCarData()
+void addCar(string plate, string name, int price)
 {
-    ifstream fin("cars.txt");
-    string name, plate, color, brand, model, price;
-    bool avail;
+    loadCars();
+    Car *n = new Car;
+    n->plate = plate;
+    n->name = name;
+    n->price = price;
+    n->available = 1;
+    n->next = head;
+    head = n;
+    saveCars();
+}
 
-    while (fin >> name >> plate >> color >> brand >> model >> price >> avail)
-        insertCar(name, plate, color, brand, model, price, avail);
+void viewCars()
+{
+    loadCars();
+    Car *t = head;
+    int found = 0;
+    while (t)
+    {
+        cout << "Plate: " << t->plate << "\nName: " << t->name
+             << "\nPrice/hr: " << t->price
+             << "\nStatus: " << (t->available ? "Available" : "Rented") << "\n\n";
+        t = t->next;
+        found = 1;
+    }
+    if (!found)
+        cout << "No cars available\n";
+}
 
-    fin.close();
+int deleteCar(string plate)
+{
+    loadCars();
+    Car *t = head, *p = NULL;
+    while (t)
+    {
+        if (t->plate == plate)
+        {
+            if (!p)
+                head = t->next;
+            else
+                p->next = t->next;
+            delete t;
+            saveCars();
+            return 1;
+        }
+        p = t;
+        t = t->next;
+    }
+    return 0;
+}
+
+int rentCar(string plate, int hours, int &bill)
+{
+    loadCars();
+    Car *t = head;
+    while (t)
+    {
+        if (t->plate == plate && t->available)
+        {
+            t->available = 0;
+            bill = t->price * hours;
+            saveCars();
+            return 1;
+        }
+        t = t->next;
+    }
+    return 0;
 }

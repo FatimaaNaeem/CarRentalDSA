@@ -1,49 +1,30 @@
 #include <iostream>
 using namespace std;
 
-// Admin functions
 void adminLogin();
-void saveAdminCredentials();
-
-// Customer functions
 void customerLogin();
+void saveAdminCredentials();
 void saveCustomerCredentials();
-
-// Car function to load cars from file
-void ViewCarData();
+void loadCars();
+void loadTransactions();
 
 int main()
 {
-    // Load cars at program start
-    ViewCarData();
-
-    // Ensure admin and customer credentials exist
     saveAdminCredentials();
     saveCustomerCredentials();
+    loadCars();
+    loadTransactions();
 
-    int option;
+    int choice;
     do
     {
-        cout << "Please login to proceed\n";
-        cout << "1. Admin\n2. Customer\n3. Exit\n";
-        cin >> option;
+        cout << "\nPlease login to proceed\n1. Admin\n2. Customer\n3. Exit\nChoice: ";
+        cin >> choice;
+        cin.ignore();
 
-        switch (option)
-        {
-        case 1:
-            adminLogin();
-            break;
-        case 2:
-            customerLogin();
-            break;
-        case 3:
-            cout << "Exiting system\n";
-            break;
-        default:
-            cout << "Invalid option\n";
-        }
-
-    } while (option != 3);
-
-    return 0;
+        if (choice == 1) adminLogin();
+        else if (choice == 2) customerLogin();
+        else if (choice == 3) break;
+        else cout << "Invalid choice\n";
+    } while (true);
 }

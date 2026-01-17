@@ -1,64 +1,53 @@
 #include <iostream>
-#include <string>
 #include <fstream>
+#include <string>
 using namespace std;
 
 struct Transaction
 {
-    int transactionID;
-    int customerID;
-    string carPlateNo;
-    int rentHours;
-    string rentDate;
-    int totalAmount;
+    string plate;
+    int hours, bill;
     Transaction *next;
 };
 
-Transaction *transactionHead = NULL;
+static Transaction *top = NULL;
 
-void pushTransaction(int tID, int cID, string plateNo, int hours, string date, int amount)
+void pushTransaction(string plate, int hours, int bill)
 {
-    Transaction *newNode = new Transaction{tID, cID, plateNo, hours, date, amount, NULL};
-    newNode->next = transactionHead;
-    transactionHead = newNode;
-}
+    Transaction *n = new Transaction;
+    n->plate = plate;
+    n->hours = hours;
+    n->bill = bill;
+    n->next = top;
+    top = n;
 
-void displayTransactions()
-{
-    Transaction *temp = transactionHead;
-    while (temp != NULL)
-    {
-        cout << "Transaction ID: " << temp->transactionID << endl;
-        cout << "Customer ID: " << temp->customerID << endl;
-        cout << "Car Plate: " << temp->carPlateNo << endl;
-        cout << "Hours: " << temp->rentHours << endl;
-        cout << "Date: " << temp->rentDate << endl;
-        cout << "Total: " << temp->totalAmount << endl;
-        cout << "-----------------------\n";
-        temp = temp->next;
-    }
-}
-
-void SaveTransactionsToFile()
-{
-    ofstream fout("transactions.txt");
-    Transaction *temp = transactionHead;
-    while (temp != NULL)
-    {
-        fout << temp->transactionID << " " << temp->customerID << " "
-             << temp->carPlateNo << " " << temp->rentHours << " "
-             << temp->rentDate << " " << temp->totalAmount << endl;
-        temp = temp->next;
-    }
+    ofstream fout("transactions.txt", ios::app);
+    fout << plate << " " << hours << " " << bill << "\n";
     fout.close();
 }
 
-void LoadTransactionsFromFile()
+void viewTransactions()
 {
     ifstream fin("transactions.txt");
-    int tid, cid, rhours, total;
-    string plateNo, rdate;
-    while (fin >> tid >> cid >> plateNo >> rhours >> rdate >> total)
-        pushTransaction(tid, cid, plateNo, rhours, rdate, total);
+    string p;
+    int h, b;
+    int found = 0;
+    while (fin >> p >> h >> b)
+    {
+        cout << "Car: " << p << " Hours: " << h << " Bill: " << b << "\n";
+        found = 1;
+    }
+    if (!found)
+        cout << "No transactions\n";
+    fin.close();
+}
+
+void loadTransactions()
+{
+    ifstream fin("transactions.txt");
+    string p;
+    int h, b;
+    while (fin >> p >> h >> b)
+        pushTransaction(p, h, b);
     fin.close();
 }

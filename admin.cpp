@@ -1,86 +1,19 @@
 #include <iostream>
-#include <fstream>
 #include <string>
+#include <fstream>
 using namespace std;
 
-// Functions from car.cpp
-void insertCar(string name, string plateNo, string color, string brand, string model, string pricePerHour, bool availability);
-void displayCars();
-bool deleteCar(string plateNo);
-void saveCarData();
-void displayTransactions(); // optional if you have transactions
-void ViewCarData();
+void addCar(string, string, int);
+void viewCars();
+int deleteCar(string);
+void viewTransactions();
 
-void adminMenu()
-{
-    int choice;
-    string name, plate, color, brand, model, price;
-    bool availability = true;
-
-    do
-    {
-        cout << "\n--- ADMIN MENU ---\n";
-        cout << "1. Add Car\n2. View Cars\n3. Delete Car\n4. View Transactions\n5. Logout\n";
-        cin >> choice;
-        cin.ignore(); // clear newline
-
-        switch (choice)
-        {
-        case 1:
-            cout << "Car Name: ";
-            getline(cin, name);
-            cout << "Plate No: ";
-            getline(cin, plate);
-            cout << "Color: ";
-            getline(cin, color);
-            cout << "Brand: ";
-            getline(cin, brand);
-            cout << "Model: ";
-            getline(cin, model);
-            cout << "Price Per Hour: ";
-            getline(cin, price);
-            insertCar(name, plate, color, brand, model, price, availability);
-            saveCarData();
-            cout << "Car added successfully\n";
-            break;
-
-        case 2:
-            displayCars();
-            break;
-
-        case 3:
-            cout << "Enter plate to delete: ";
-            getline(cin, plate);
-            if (deleteCar(plate))
-            {
-                saveCarData();
-                cout << "Car deleted successfully\n";
-            }
-            else
-                cout << "Car not found\n";
-            break;
-
-        case 4:
-            displayTransactions();
-            break;
-
-        case 5:
-            cout << "Logging out...\n";
-            break;
-
-        default:
-            cout << "Invalid choice\n";
-        }
-    } while (choice != 5);
-}
-
-bool loginAdminFromFile(string username, string password)
+bool loginAdmin(string u, string p)
 {
     ifstream fin("admins.txt");
-    int id;
-    string u, p;
-    while (fin >> id >> u >> p)
-        if (u == username && p == password)
+    string U, P;
+    while (fin >> U >> P)
+        if (U == u && P == p)
         {
             fin.close();
             return true;
@@ -89,15 +22,57 @@ bool loginAdminFromFile(string username, string password)
     return false;
 }
 
+void adminMenu()
+{
+    int ch, price;
+    string plate, name;
+
+    do
+    {
+        cout << "\nADMIN MENU\n1. Add Car\n2. View Cars\n3. Delete Car\n4. View Transactions\n5. Logout\nChoice: ";
+        cin >> ch;
+        cin.ignore();
+
+        if (ch == 1)
+        {
+            cout << "Plate: ";
+            getline(cin, plate);
+            cout << "Name: ";
+            getline(cin, name);
+            cout << "Price/hr: ";
+            cin >> price;
+            cin.ignore();
+            addCar(plate, name, price);
+            cout << "Car added\n";
+        }
+        else if (ch == 2)
+            viewCars();
+        else if (ch == 3)
+        {
+            cout << "Plate: ";
+            getline(cin, plate);
+            if (deleteCar(plate))
+                cout << "Deleted\n";
+            else
+                cout << "Not found\n";
+        }
+        else if (ch == 4)
+            viewTransactions();
+        else if (ch == 5)
+            return;
+        else
+            cout << "Invalid choice\n";
+    } while (true);
+}
+
 void adminLogin()
 {
-    string username, password;
+    string u, p;
     cout << "Enter username: ";
-    cin >> username;
+    cin >> u;
     cout << "Enter password: ";
-    cin >> password;
-
-    if (loginAdminFromFile(username, password))
+    cin >> p;
+    if (loginAdmin(u, p))
         adminMenu();
     else
         cout << "Invalid admin credentials\n";
@@ -106,6 +81,6 @@ void adminLogin()
 void saveAdminCredentials()
 {
     ofstream fout("admins.txt");
-    fout << 1 << " fatima 66660";
+    fout << "fatima 66660\n";
     fout.close();
 }
