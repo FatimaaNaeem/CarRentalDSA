@@ -184,7 +184,7 @@ public:
         ofstream fout("customers.txt", ios::app);
         fout << u << " " << p << endl;
         fout.close();
-        cout << "Signup successful!" << endl;
+        cout << "Signup successful" << endl;
     }
     bool login()
     {
@@ -232,19 +232,19 @@ public:
                 if (cm.rentCar(plate, hours, bill))
                 {
                     cout << "Total Bill: " << bill << endl;
-                    cout << "Confirm payment (1=yes): ";
+                    cout << "Confirm payment? (1 for yes): ";
                     int confirm;
                     cin >> confirm;
                     if (confirm == 1)
                     {
                         tm.pushTransaction(plate, hours, bill);
-                        cout << "Rental successful!" << endl;
+                        cout << "Rental successful" << endl;
                     }
                     else
                         cout << "Transaction cancelled." << endl;
                 }
                 else
-                    cout << "Car not available." << endl;
+                    cout << "Car not available" << endl;
             }
             else if (choice == 3)
                 break;
