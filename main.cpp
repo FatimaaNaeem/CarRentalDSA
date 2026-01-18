@@ -232,7 +232,7 @@ public:
                 if (cm.rentCar(plate, hours, bill))
                 {
                     cout << "Total Bill: " << bill << endl;
-                    cout << "Confirm payment? (1 for yes): ";
+                    cout << "Confirm payment (1 for yes) ";
                     int confirm;
                     cin >> confirm;
                     if (confirm == 1)
@@ -244,7 +244,7 @@ public:
                         cout << "Transaction cancelled." << endl;
                 }
                 else
-                    cout << "Car not available" << endl;
+                    cout << "Car not available." << endl;
             }
             else if (choice == 3)
                 break;
@@ -361,26 +361,34 @@ void saveAdminCredentials()
     fout.close();
 }
 
-int main() {
+int main()
+{
     saveAdminCredentials();
     CarManager cm;
     TransactionManager tm;
     Customer cust;
     Admin adm;
     int choice;
-    do {
-        cout <<endl<< "1. Admin Portal" << endl;
+    do
+    {
+        cout << endl
+             << "1. Admin Portal" << endl;
         cout << "2. Customer Portal" << endl;
         cout << "3. Exit" << endl;
         cout << "Choice: ";
         cin >> choice;
-    cin.clear();
-    cin.ignore(1000,'\n');
-        if (choice == 1){
+        cin.clear();
+        cin.ignore(1000, '\n');
+        if (choice == 1)
+        {
             adm.adminAccess(cm, tm);
-        }else if (choice == 2){
+        }
+        else if (choice == 2)
+        {
             cust.customerAccess(cm, tm);
-        }else if (choice == 3){
+        }
+        else if (choice == 3)
+        {
             break;
         }
 

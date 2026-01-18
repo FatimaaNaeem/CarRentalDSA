@@ -1,0 +1,4 @@
+GH45 Alto 2000 0
+MX34 city 5000 1
+AS23 civic 7000 1
+AN12 BMW 9000 1
